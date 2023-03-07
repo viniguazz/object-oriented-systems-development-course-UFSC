@@ -13,7 +13,7 @@ Attributes are variables that describe an object. Methods are functions (for the
 
 # Declaring classes in Python
 
-class Car:
+	class Car:
 
 	def __init__(self, model: str, color: str, licensePlate: str):      # constructor method
 		self.model = model
