@@ -1,11 +1,13 @@
 
 # Intro 
 
-Object: a computational representation of a certain entity, geared towards executing a certain task, with well defined limits. It's a collection of data (attributes) and operations (methods) that operate the data, representing a logic entity in the system.
+OOP is a method that aims to organize the code in a way that get closer to real world.
 
-Abstraction: identify the important aspects of a phenomenon and ignore it's details.
+* Object: a computational representation of a certain entity, geared towards executing a certain task, with well defined limits. It's a collection of data (attributes) and operations (methods) that operate the data, representing a logic entity in the system.
 
-Class: the defition of a group of objects with common properties and behaviours. 
+* Abstraction: identify the important aspects of a phenomenon and ignore it's details.
+
+* Class: the defition of a group comprised of objects that share common properties and behaviors. 
 
 An object is an instatiation of a class.
 
@@ -32,8 +34,9 @@ Attributes are variables that describe an object. Methods are functions (for the
 		if self.speed < 0:
 			self.speed = 0
 
-self: is a reference to the object that will be instantiated. It's mandatory and must always be the first argument of any method.
-constructor: a method that is automatically triggered whenever a class is instantiated.
+The 'self' keyword is a reference to the object that will be instantiated. It's mandatory and must always be the first argument of any method.
+
+The 'constructor' is a method that is automatically triggered whenever a class is instantiated.
 
 # Instantiation
 
@@ -43,8 +46,14 @@ constructor: a method that is automatically triggered whenever a class is instan
 		car.honk()
 		car.accelerate()
 
-Attention: notice that SELF isn't passed whenever the methods of an instantiated object are called.
+Attention: notice that SELF isn't passed whenever the methods of an instantiated object are called. Notice that we use dot notation.
 
 # Pillars of abstraction
+
+* Encapsulation
+* Inheritance
+* Composition
+* Polymorphism
+
 
 
