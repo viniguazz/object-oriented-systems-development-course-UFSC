@@ -200,4 +200,15 @@ Herança múltipla: a subclasse herda de mais de uma classe.
 
 	OBS:Classe gênero e autor no trabalho 2 -> há um milhão de modos de modelar um problemas, criando infinitas classes. Mas é interessante entender que as opções devem ser orientadas tendo em mente o que vai ser feito com o sistema, como ele será utilizado pelo usuário final.
 
+# Aula 4
 
+Classe associativa: é uma forma de resolver uma relação many-to-many ou one-to-many. A própria associação entre duas classes é tão complexa que exige ou ao menos sugere a criação de uma classe que represente essa associação. Essa classes associativa terá objetos de ambas as classes que ela associa (ex.: objetos de cliente e conta - e a classe associativa é AssocClienteConta).
+
+Associação qualificada: é um modo de representar um atributo que tem um dicionário, onde, no exemplo abaixo, o produto é a chave de um dicionário que contém objetos da classe ITEMPEDIDO.
+________
+PEDIDO  | produto --------------- > ITEMPEDIDO
+---------
+
+O produto é a chave e o ITEMPEDIDO é o valor..
+
+Associações reflexivas: uma classe está associada a ela mesma. É uma relação entre objetos da mesma classe.uma classe tem objetos de si própria.
