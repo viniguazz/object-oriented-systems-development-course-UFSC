@@ -212,3 +212,70 @@ PEDIDO  | produto --------------- > ITEMPEDIDO
 O produto é a chave e o ITEMPEDIDO é o valor..
 
 Associações reflexivas: uma classe está associada a ela mesma. É uma relação entre objetos da mesma classe.uma classe tem objetos de si própria.
+
+OBS: Quando tenho composição, significa que eu o objeto não virá pronto para a classe: ele será instanciado dentro dela. Temos que criar uma função, dentro da classe principal, que receba os argumentos necessários para instanciar e inserir dentro dela os objetos dependentes.
+
+# Aula 5
+
+### Classes abstratas (para garantir que não conseguiremos instanciar um objeto)
+
+Classe abstrata: É uma classe que não terá objetos instanciados! A classe pode estar completinha, mas não poderá ser instanciada.
+Ela oferece uma base abstrata para a hierarquia de classes. Interessante para o uso de polimorfismo.
+
+No UML, indico que é uma classes abstrata tanto por {abstract} ou pelo uso de itálico. 
+
+A classe abstrata funciona como uma interface! Eu digo o que eu preciso mas eu não implemento.
+
+Na classe abstrata é muito comum só a previsão de um método e deixar a implementação para as classes filhas, que precisarão implementar cada uma a seu modo (para suprir as suas necessidades).
+
+Nos métodos abstratos, colocaremos um pass dentro do corpo da função. Isso torna obrigatória a implementação do método nas classes filhas!
+
+
+No Python:
+
+
+from abc import ABC, abstractmethod
+
+class Figura(ABC):
+
+	@abstractmethod
+	def __init__(self):
+		pass
+
+	@abstractmethid
+	def desenhe(self):
+		pass
+
+
+class Circulo(Figura):
+
+	def __init__(self, raio):
+		super().__init__()
+		self.__raio = raio
+
+	@property
+	def raio(self):
+		return self.__raio
+
+	@raio.setter
+	def raio
+	...
+
+	def desenhe(self):  +========> a implementação dessa aqui é obrigatória em função da utilização de @abstractmethod lá em cima
+
+
+Por que fica uma interface? Porque as classes filhas precisam implementar o método com a mesma ASSINATURA DE MÉTODO (mesmo nome do método/função e os mesmos parâmetros).
+
+LEMBRE: assinatura de método ===>    NOME DA FUNÇÃO + PARÂMETROS
+
+
+O nome disso é polimorfismo. A possibilidade de que algo assuma diversas formas.
+
+BAIXAR E ANALISAR A IMPLEMENTAÇÃO DE MOSTRA_DADOS EM DEPENDENTES! 
+
+
+OBS: é possível implementar parte ao menos de um método abstrato -> e aí eu chamo essa implementação nas filhas usando super()
+OBS: é possível também implementar totalmente a classe original (e aí o @abstractmethod serve como um jeito de forças as classes a implementar --- lembrando que eu teria que chamar a funcionalidade colocando um super() dentro do método da classe filha)
+
+Dica do exercício: retornar pedaços da string para as classes concretas (castatinha) - não usaremos pass, iremos implementar algumas funcionalidades que vão se incrementando e se somando ao longo das passagens para as funções de baixo. Um monte de return, formatar a string e printar.
+

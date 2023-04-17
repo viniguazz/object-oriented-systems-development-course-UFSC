@@ -1,0 +1,120 @@
+# Classes abstratas -> para garantir que não conseguiremos instanciar um objeto
+
+Classe abstrata: É uma classe que não terá objetos instanciados! A classe pode estar completinha, mas não poderá ser instanciada.
+Ela oferece uma base abstrata para a hierarquia de classes. Interessante para o uso de polimorfismo.
+
+No UML, indico que é uma classes abstrata tanto por {abstract} ou pelo uso de *itálico*. 
+
+A classe abstrata funciona como uma interface! Eu digo o que eu preciso mas eu não implemento.
+
+Na classe abstrata, é muito comum só fazermos a **previsão** de um método e deixarmos a sua **implementação** para as classes filhas, que precisarão implementá-lo, cada uma a seu modo (para suprir as suas necessidades próprias/intrínsecas).
+
+Nos métodos abstratos, colocaremos um *pass* dentro do corpo da função. Isso torna obrigatória a implementação do método nas classes filhas!
+
+
+No python:
+
+
+from abc import ABC, abstractmethod
+
+class Figura(ABC):
+
+	@abstractmethod
+	def __init__(self):
+		pass
+
+	@abstractmethid
+	def desenhe(self):
+		pass
+
+
+class Circulo(Figura):
+
+	def __init__(self, raio):
+		super().__init__()
+		self.__raio = raio
+
+	@property
+	def raio(self):
+		return self.__raio
+
+	@raio.setter
+	def raio
+	...
+
+	def desenhe(self):  +========> a implementação dessa aqui é obrigatória em função da utilização de @abstractmethod lá em cima
+
+
+Por que fica uma interface? Porque as classes filhas precisam implementar o método com a mesma ASSINATURA DE MÉTODO (mesmo nome do método/função e os mesmos parâmetros).
+
+LEMBRE: assinatura de método ===>    NOME DA FUNÇÃO + PARÂMETROS
+
+
+O nome disso é polimorfismo. A possibilidade de que algo assuma diversas formas.
+
+
+## Estruturando sistemas Orientados a Objetos
+
+Camadas -> atribuímos camadas para as classes, a depender de suas funções
+
+Tipos de camadas:
+
+* Camada de apresentação (boundary) - View
+
+É onde ocorre a entrada e saída de dados. Interação direta com os usuários do sistema, bem como os testes de input possíveis.
+
+Ex.:
+
+	Telas: cadastro, opções, empréstimos, etc;
+	APIS.
+
+
+
+* Camada de Negócios (control) - Controler
+
+Controle de fluxo geral (controla limites, entidades e outros controladores).
+Processamento de algoritmos e das regras de negócio. É livre de tecnologia (independe de tecnologia interface gráfica, independe de tecnologia de banco de dados. É o núcleo o sistema. Novamente, traz as regras de negócio (ex.: para adotar um cachorro, o usuário precisa de um apartamento grande).
+
+
+* Camada de Persistência (entity) - Model
+
+Objetos que persistem na aplicação. Guarda informações em geral (dados) - guardamos nos atributos de objetos. Podemos acoplar a ela um banco de dados, para melhorar a persistência.
+
+
+-- usuário -- 
+	-- objeto de limite -- 
+		-- objeto de transferência (transiente) <geralmente é um dicionário> -- 
+			-- objeto de controle -- controle --
+				-- data access object --
+					-- dispositivo de armazenamento
+
+
+Cada **classe**, geralmente, terá um **controlador** e uma **tela**. Ex.: uma classe livro terá uma tela livro e um controlador de livro.
+
+A tela, no exemplo, irá ler os atributos do livro que se quer cadastrar. O controlador (que terá uma lista dos objetos livros) irá receber essas informações e **gerar um objeto livro**, além de inclui-lo nessa lista. Além disso, o controlador irá alterando a tela.
+
+Livro --> entidade (entity - MODEL)
+ControladorLivros --> controlador (business - CONTROL)
+TelaLivro --> tela (boundary - VIEW)
+
+OBS: livro não conhece tela e tela não conhece livro. Isso é muito importante. É a base da separação.
+OBS: Às vezes, a tela tem o controlador como atributo. Investigar o porquê.
+OBS: criação de pacotes em python. Estudar no PDF e no RealPython.
+
+O controlador é o dono da tela e também é dono da LISTA de entidades.
+
+Quando toda a tela tiver um certo método, podemos criar uma tela abstrata (que não pode ser instanciada - afinal, não precisamos, só precisamos das instâncias de telas concretas) e fazer com que as outras herdem dela.
+
+--------------- **SUPER IMPORTANTE: Podemos fazer classes abstratas de controladores, telas e entidades.** -------------------------
+
+obs: CONTROLADOR NÃO FAZ PRINT NEM INPUT. QUEM FAZ ISSO É A TELA.
+obs2: a tela NÃO PODE TER ACESSO À ENTIDADE.
+obs3: VOCÊ PODE MONTAR A STRING NO CONTROLADOR E MANDAR PARA A TELA, OU MONTAR O PRINT LÁ.
+
+A professora indica que implementemos um método para pegar cada entidade por um identificador (ex. pega amigo por cpf, pega livro por código, etc). Isso irá facilitar muito as coisas.
+
+Para implementar, imagine um diálogo entre as partes do código. "Hey, tela, mostra esse menu aqui. Qual é a opção que o usuário escolheu? Tá, mostra isso aqui, então... etc"
+
+Na parte 2 do trabalho, a ideia é que não alteremos o controlador (apenas alteremos a tela e a entidade - se formos fazer persistência com DBs).
+
+A professora sugere, também, que cada entidade tenha um código sequencial para os objetos instanciados.

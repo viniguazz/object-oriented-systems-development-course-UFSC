@@ -1,0 +1,43 @@
+
+#ok
+
+
+from abc import ABC, abstractmethod, abstractproperty
+from cliente import Cliente
+from tecnico import Tecnico
+
+class AbstractControladorPessoas(ABC):
+
+
+	@abstractmethod      ### eu quer criei, para tornar a classe, de fato, abstrata (obstando a instanciação)
+	def __init__(self):
+		pass
+
+
+	# @return retorna a lista de clientes
+	@abstractproperty
+	@property
+	def clientes(self) -> list:
+		pass
+
+	# @return retorna a lista de tecnicos
+	@abstractproperty
+	@property
+	def tecnicos(self) -> list:
+		pass
+
+	# Permite a inclusao de um novo cliente na lista de clientes
+	# @param codigo codigo do Cliente
+	# @param nome nome do Cliente
+	# @return retorna o cliente inserido
+	@abstractmethod
+	def inclui_cliente(self, codigo :int, nome :str) -> Cliente:
+		pass
+
+	# Permite a inclusao de um novo tecnico na lista de tecnicos
+	# @param codigo codigo do tecnico
+	# @param nome nome do tecnico
+	# @return retorna o tecnico inserido
+	@abstractmethod
+	def inclui_tecnico(self, codigo :int, nome :str) -> Tecnico:
+		pass
