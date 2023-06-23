@@ -118,3 +118,567 @@ Para implementar, imagine um diálogo entre as partes do código. "Hey, tela, mo
 Na parte 2 do trabalho, a ideia é que não alteremos o controlador (apenas alteremos a tela e a entidade - se formos fazer persistência com DBs).
 
 A professora sugere, também, que cada entidade tenha um código sequencial para os objetos instanciados.
+
+
+# Tratamento de exceções
+
+Exceção é um evento que ocorre durante a execução de um programa e que interrompe o fluxo normal de instruções.
+
+Quando uma exceção ocorre dentro de um método, é criado um objeto que é entregue para o ambiente de execução. Esse comportamento é denominado raise uma exceção. O objeto criado é chamado de objeto de exceção e contém informações sobre a exceção. Essa exceção é um objeto, contendo vários atributos que conseguimos lançar.
+
+Depois que um método levanta (raise) uma exceção, o ambiente de execução tenta encontrar algum tratamento para a exceção.
+
+A sequência de possíveis tratamentos para manipular a exceção é a plha dos métodos que foram chamados para chegar até o método onde o erro ocorreu (um tratamento pode ser até mesmo uma mensagem na tela).
+
+Quando tem uma pilha de chamados, depois do raise, o python vai percorrendo os métodos daw pilha para o buscar o tratamento da exceção.
+
+Por tratar uma exceção se entende fazer uma deteminada coisa se outra deteminada coisa der errado (o fluxo do programa é desviado para o except) e depois a execução segue normalmente.
+
+	try:
+		1/0
+	except Exception:
+		print('erro')
+	else: # só é executado se não entra no except
+		print('não deu errado')
+	finally:
+		print('sempre executa')
+
+Em algumas situações, é interessante criar as próprias exceções.
+
+Se aconteceu algum erro, idealmente, devemos avisar ao usuário o erro que ocorreu. Como que eu aviso aquele que chamou o método que aconteceu o erro? Com exceções (melhor do que retornar booleanos ou magic numbers).
+
+Lançamos exceções...
+
+Podemos criar nossas próprias classes de exceções: 1) verifique se o python já nãooferece uma exceção; 2) verifique se a nova exceção será realmente útil; 3) crie uma nova classe herdando de exception; 4) use a palavra exception no final do nome da classe (boa prática de legibilidade).
+
+Ex.:
+
+	class SaldoInsuficienteException(Exception):
+		def __init__(self, valor: float):
+		self.mensagem - f'impossível sacar R$ {valor}'
+		super().__init__(self.mensagem)
+
+	try:
+		conta.sacar(2000.00)
+	except SalvoInsuficienteException as e:
+		print(e)
+
+OBS oop: uma entidade e um controller formam uma composição -> o controlador instancia dentro dele a entidade
+
+
+# Tratamento de Exceções
+
+Ao se desenvolver um programa orientado a objetos, exceções podem ocorrer nos mais diversos momentos e por diversos motivos: por não ter conseguido se conectar a um banco de dados, por não conseguir abrir um arquivo, tentar acessar um elemento de um array que não existe, etc.
+
+Para começarmos a entender como funciona o tratamento de exceções, dê uma olhada no código abaixo. 
+É definida uma função simples para calcular uma divisão.
+
+Teste o código abaixo de duas formas:
+> Primeiro execute da forma como está. O que acontece?<br>
+> Depois altere o valor da variável `divisor` para 5, ou outro valor válido. O que acontece?
+
+
+```python
+def divide(dividendo: int, divisor: int):
+    print(">>> Início Função: divide(dividendo, divisor)")
+    print(">>> Antes de realizar a divisão")
+    resultado = dividendo / divisor
+    print(">>> Depois de realizar a divisão")
+    return resultado
+
+dividendo = 10
+divisor = 0
+
+print("> Antes de chamar a função da divisão")
+resultado = divide(dividendo, divisor)
+print("> Depois de realizar a divisão")
+print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+
+```
+
+    > Antes de chamar a função da divisão
+    >>> Início Função: divide(dividendo, divisor)
+    >>> Antes de realizar a divisão
+
+
+
+    ---------------------------------------------------------------------------
+
+    ZeroDivisionError                         Traceback (most recent call last)
+
+    Cell In[1], line 12
+          9 divisor = 0
+         11 print("> Antes de chamar a função da divisão")
+    ---> 12 resultado = divide(dividendo, divisor)
+         13 print("> Depois de realizar a divisão")
+         14 print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+
+
+    Cell In[1], line 4, in divide(dividendo, divisor)
+          2 print(">>> Início Função: divide(dividendo, divisor)")
+          3 print(">>> Antes de realizar a divisão")
+    ----> 4 resultado = dividendo / divisor
+          5 print(">>> Depois de realizar a divisão")
+          6 return resultado
+
+
+    ZeroDivisionError: division by zero
+
+
+### Qual o resultado?
+Na forma original ocorre uma exceção: `ZeroDivisionError` pois tentamos fazer a operação: 10/0. Após ocorrer esse erro, nenhuma outra linha de código é executada.<br> 
+Ou seja, nunca a string: `"> Depois de realizar a divisão"` é exibida, por exemplo.
+
+## Tratando a Exceção
+
+Mas, e se tratarmos essa exceção? Ou seja, e se protegermos o trecho de código onde algum problema pode acontecer?
+
+Para isso utilizaremos:
+- A cláusula **`try`** antes de executar o código que queremos proteger e 
+- A cláusula **`except`** para indicar o que deve ser feito em caso de exceção do tipo `ZeroDivisionError` 
+
+
+```python
+def divide(dividendo: int, divisor: int):
+    print(">>> Início Função: divide(dividendo, divisor)")
+    print(">>> Antes de realizar a divisão")
+    resultado = None
+    try:
+        print(">>>> Entrando no try")
+        resultado = dividendo / divisor
+        print(">>>> Após o cálculo")
+    except ZeroDivisionError:
+        print(">>>> Ocorreu uma exceção ZeroDivisionError")
+        print(">>>> O valor do divisor deve ser um inteiro maior que zero!!!!")
+    print(">>> Depois de realizar a divisão")
+    return resultado
+
+dividendo = 10
+divisor = 0
+print("> Antes de chamar a função da divisão")
+resultado = divide(dividendo, divisor)
+print("> Depois de realizar a divisão")
+if resultado is not None:
+    print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+```
+
+    > Antes de chamar a função da divisão
+    >>> Início Função: divide(dividendo, divisor)
+    >>> Antes de realizar a divisão
+    >>>> Entrando no try
+    >>>> Ocorreu uma exceção ZeroDivisionError
+    >>>> O valor do divisor deve ser um inteiro maior que zero!!!!
+    >>> Depois de realizar a divisão
+    > Depois de realizar a divisão
+
+
+
+
+Com isso, conseguimos proteger o código e não é mais exibida a exceção na tela.<br>
+Acrescentamos também um `if resultado is not None:` na hora de printar o resultado, levando em conta que o valor de `resultado` agora pode ser None.
+> **IMPORTANTE:** É importante notar que a string `">>>> Após o cálculo"` nunca é exibida, pois ao ocorrer a exceção, a execução do código é desviada para a clausa `except` que trata aquela exceção específica
+
+## Outras cláusulas utilizadas no tratamento de exceções 
+Também podemos adicionar trechos de código específicos:
+- A cláusula **`else`** para executar algum código nos casos em que não ocorra o erro
+- A cláusula **`finally`** para algum código que queremos que sempre seja executado, independente de ocorrer uma exceção ou não
+
+Teste o código abaixo mudando o valor da variável `divisor` para ver os diferentes comportamentos de **`else`** e **`finally`**
+
+
+```python
+def divide(dividendo: int, divisor: int):
+    print(">>> Início Função: divide(dividendo, divisor)")
+    print(">>> Antes de realizar a divisão")
+    resultado = None
+    try:
+        print(">>>> Entrando no try")
+        resultado = dividendo / divisor
+        print(">>>> Após o cálculo")
+    except ZeroDivisionError:
+        print(">>>> Ocorreu uma exceção ZeroDivisionError")
+        print(">>>> O valor do divisor deve ser um inteiro maior que zero!!!!")
+    else:
+        print(">>>> else: NÃO Ocorreu exceção")
+    finally:
+        print(">>>> finally: esta parte sempre é executada")
+    print(">>> Depois de realizar a divisão")
+    return resultado
+
+dividendo = 10
+divisor = 0
+
+print("> Antes de chamar a função da divisão")
+resultado = divide(dividendo, divisor)
+print("> Depois de realizar a divisão")
+if resultado is not None:
+    print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+```
+
+    > Antes de chamar a função da divisão
+    >>> Início Função: divide(dividendo, divisor)
+    >>> Antes de realizar a divisão
+    >>>> Entrando no try
+    >>>> Ocorreu uma exceção ZeroDivisionError
+    >>>> O valor do divisor deve ser um inteiro maior que zero!!!!
+    >>>> finally: esta parte sempre é executada
+    >>> Depois de realizar a divisão
+    > Depois de realizar a divisão
+
+
+## Tipos de Exceções
+
+Você já deve saber que em Python existem muitos tipos de exceções além de `ZeroDivisionError`.
+Como estamos tratando essa exceção específica `ZeroDivisionError`, o que acontece se outro tipo de exceção ocorrer?<br>
+Veja o trecho de código abaixo. Estamos forçando outro tipo de exceção ao atribuir o valor **"a"** ao divisor. O que acontece?
+
+
+```python
+def divide(dividendo: int, divisor: int):
+    print(">>> Início Função: divide(dividendo, divisor)")
+    print(">>> Antes de realizar a divisão")
+    resultado = None
+    try:
+        print(">>>> Entrando no try")
+        resultado = dividendo / divisor
+        print(">>>> Após o cálculo")
+    except ZeroDivisionError:
+        print(">>>> Ocorreu uma exceção ZeroDivisionError")
+        print(">>>> O valor do divisor deve ser um inteiro maior que zero!!!!")
+    else:
+        print(">>>> else: NÃO Ocorreu exceção")
+    finally:
+        print(">>>> finally: esta parte sempre é executada")
+    print(">>> Depois de realizar a divisão")
+    return resultado
+
+dividendo = 10
+divisor = "a"
+
+print("> Antes de chamar a função da divisão")
+resultado = divide(dividendo, divisor)
+print("> Depois de realizar a divisão")
+if resultado is not None:
+    print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+```
+
+    > Antes de chamar a função da divisão
+    >>> Início Função: divide(dividendo, divisor)
+    >>> Antes de realizar a divisão
+    >>>> Entrando no try
+    >>>> finally: esta parte sempre é executada
+
+
+
+    ---------------------------------------------------------------------------
+
+    TypeError                                 Traceback (most recent call last)
+
+    Cell In[4], line 23
+         20 divisor = "a"
+         22 print("> Antes de chamar a função da divisão")
+    ---> 23 resultado = divide(dividendo, divisor)
+         24 print("> Depois de realizar a divisão")
+         25 if resultado is not None:
+
+
+    Cell In[4], line 7, in divide(dividendo, divisor)
+          5 try:
+          6     print(">>>> Entrando no try")
+    ----> 7     resultado = dividendo / divisor
+          8     print(">>>> Após o cálculo")
+          9 except ZeroDivisionError:
+
+
+    TypeError: unsupported operand type(s) for /: 'int' and 'str'
+
+
+### O que aconteceu? 
+
+Acaba ocorrendo outro tipo de exceção: **`TypeError`** e essa exceção não está sendo tratada.<br>
+Uma forma de contornar isso seria utilizar uma exceção mais genérica, seguindo a hierarquia de classes de exceção:
+
+<img src="img/tipos_excecoes.png" width="400" height="600" alt="Imagem mostrando tipos de exceções" title="Tipos de Exceções" />
+
+
+Então, se tratarmos o tipo de exceção **`Exception`** que é mais genérico que `TypeError` e `ZeroDivisionError` deve resolver o nosso problema, correto?<br>
+Dê uma olhada no código abaixo. Trocamos somente o tipo da exceção que está sendo tratada para **`Exception`**:
+
+
+
+```python
+def divide(dividendo: int, divisor: int):
+    print(">>> Início Função: divide(dividendo, divisor)")
+    print(">>> Antes de realizar a divisão")
+    resultado = None
+    try:
+        print(">>>> Entrando no try")
+        resultado = dividendo / divisor
+        print(">>>> Após o cálculo")
+    except Exception:
+        print(">>>> Ocorreu uma exceção ZeroDivisionError")
+        print(">>>> O valor do divisor deve ser um inteiro maior que zero!!!!")
+    print(">>> Depois de realizar a divisão")
+    return resultado
+
+dividendo = 10
+divisor = "a"
+
+print("> Antes de chamar a função da divisão")
+resultado = divide(dividendo, divisor)
+print("> Depois de realizar a divisão")
+if resultado is not None:
+    print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+```
+
+    > Antes de chamar a função da divisão
+    >>> Início Função: divide(dividendo, divisor)
+    >>> Antes de realizar a divisão
+    >>>> Entrando no try
+    >>>> Ocorreu uma exceção ZeroDivisionError
+    >>>> O valor do divisor deve ser um inteiro maior que zero!!!!
+    >>> Depois de realizar a divisão
+    > Depois de realizar a divisão
+
+
+### O que aconteceu?
+
+O tratamento da exceção funcionou. Conseguimos tratar também a exceção do tipo `TypeError`.
+> No entanto, você notou que a mensagem: `>>>> Ocorreu uma exceção ZeroDivisionError` continua aparecendo? Então, nem sempre é a melhor saída simplesmente tratar a exceção o mais genérica possível, pois não conseguimos dar uma mensagem de erro correta para o usuário
+
+Que tal então se ao invés de trocar, simplesmente adicionarmos o tratamento da outra exceção específica?<br>
+Teste alterando o valor do divisor para **`0`** e **`"a"`** para ver o resultado:
+
+
+
+```python
+def divide(dividendo: int, divisor: int):
+    print(">>> Início Função: divide(dividendo, divisor)")
+    print(">>> Antes de realizar a divisão")
+    resultado = None
+    try:
+        print(">>>> Entrando no try")
+        resultado = dividendo / divisor
+        print(">>>> Após o cálculo")
+    except ZeroDivisionError:
+        print(">>>> Ocorreu uma exceção ZeroDivisionError")
+        print(">>>> O valor do divisor deve ser um inteiro maior que zero!!!!")
+    except TypeError:
+        print(">>>> Ocorreu uma exceção TypeError")
+        print(">>>> O valor do divisor deve ser numérico!!!!")
+    print(">>> Depois de realizar a divisão")
+    return resultado
+
+dividendo = 10
+divisor = 0
+
+print("> Antes de chamar a função da divisão")
+resultado = divide(dividendo, divisor)
+print("> Depois de realizar a divisão")
+if resultado is not None:
+    print("> Resultado da divisao:", dividendo, "/", divisor, "=", resultado)
+```
+
+    > Antes de chamar a função da divisão
+    >>> Início Função: divide(dividendo, divisor)
+    >>> Antes de realizar a divisão
+    >>>> Entrando no try
+    >>>> Ocorreu uma exceção ZeroDivisionError
+    >>>> O valor do divisor deve ser um inteiro maior que zero!!!!
+    >>> Depois de realizar a divisão
+    > Depois de realizar a divisão
+
+
+## Disparando exceções
+
+Além disso, em Python é possível disparar exceções explicitamente, utilizando o comando **`raise`**.<br>
+No código abaixo, emitimos uma exceção genérica do tipo **`Exception`**, para ver o comportamento padrão do Python quando uma exceção é disparada mas não é tratada.
+
+
+```python
+print("Antes da exceção")
+
+raise Exception("Levantando uma exceção")
+    
+print("Essa linha nunca será executada")
+```
+
+    Antes da exceção
+
+
+
+    ---------------------------------------------------------------------------
+
+    Exception                                 Traceback (most recent call last)
+
+    Cell In[7], line 3
+          1 print("Antes da exceção")
+    ----> 3 raise Exception("Levantando uma exceção")
+          5 print("Essa linha nunca será executada")
+
+
+    Exception: Levantando uma exceção
+
+
+## Lidando com o conteúdo da exceção
+
+Muitas vezes pode ser importante manipular as informações da exceção. Para isso, podemos dar um "nome" ao objeto de exceção para permitir acesso aos seus atributos e métodos públicos.<br> 
+Veja a variável **`e`** no código abaixo, ela contém o objeto de exceção. A partir desse objeto é possível obter diversas informações sobre a exceção que ocorreu.<br> 
+Veja o exemplo a seguir:
+
+
+```python
+try:
+    print("Provocando uma exceção: 10/0")
+    10/0
+except Exception as e:
+    print(">>> Ocorreu uma exceção inesperada :-)")
+    print(e)
+    print("Linha onde ocorreu a exceção:", e.__traceback__.tb_lineno)
+    print("Nome da classe da exceção que ocorreu:", e.__class__.__name__)  
+
+```
+
+    Provocando uma exceção: 10/0
+    >>> Ocorreu uma exceção inesperada :-)
+    division by zero
+    Linha onde ocorreu a exceção: 3
+    Nome da classe da exceção que ocorreu: ZeroDivisionError
+
+
+## Criando sua própria classe de Exceção
+
+Em Python você pode ainda criar suas próprias exceções. Basta para isso criar uma classe que faça uma herança de alguma classe da hierarquia de classes de exceção. Neste exemplo, criaremos a classe **`SaldoInsuficienteException`** que herda de `Exception`:
+
+<img src="img/tipos_excecoes_customizada.png" width="400" height="600" alt="Imagem mostrando tipos de exceções" title="Tipos de Exceções" />
+
+### Para que isso seria útil?
+
+Você pode, por exemplo, definir classes de exceções de negócio. Essas exceções podem ser utilizadas para trafegar uma mensagem de violação de alguma regra de negócio até a tela que irá exibi-la.<br>
+
+Veja este exemplo de código a seguir. Definimos uma classe de exceção **`SaldoInsuficienteException`** que herda de `Exception`. Definimos também uma classe que representa uma `ContaBancaria` bem simples, só para testes. No momento de um saque, a conta bancária verifica se o saldo é suficiente para realizar o saque e, caso não seja, levanta a exceção `SaldoInsuficienteException`.
+
+Teste o código alterando os valores que são passados para o saque em: `conta.realiza_saque(2000.00)`
+
+
+
+```python
+class SaldoInsuficienteException(Exception):
+    def __init__(self, saldo: float, valor_saque: float):
+        self.mensagem = "O saldo R$ {:.2f} é insuficiente para realizar o saque do valor R$ {:.2f}"
+        super().__init__(self.mensagem.format(saldo, valor_saque))
+        
+
+class ContaBancaria:
+    def __init__(self, numero, saldo_inicial: float):
+        self.__numero = numero
+        self.__saldo = saldo_inicial
+        
+    def realiza_saque(self, valor_saque):
+        if valor_saque > self.__saldo:
+            raise SaldoInsuficienteException(self.__saldo, valor_saque)
+        else:
+            self.__saldo -= valor_saque
+        
+
+print("Instanciando uma Conta Bancaria")
+conta = ContaBancaria(123, 1000.00)
+try:
+    print("Tentando realizar o saque")
+    
+    conta.realiza_saque(2000.00) 
+    
+    print("Saque realizado com sucesso!")
+except SaldoInsuficienteException as e:
+    print(e)
+    
+```
+
+    Instanciando uma Conta Bancaria
+    Tentando realizar o saque
+    O saldo R$ 1000.00 é insuficiente para realizar o saque do valor R$ 2000.00
+
+
+## Para finalizar
+
+Com isso tivemos uma visão geral de exceções. Se você quiser se aprofundar, consulte a documentação oficial do Python sobre exceções: <a href="https://docs.python.org/3/library/exceptions.html">https://docs.python.org/3/library/exceptions.html</a>
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+
+Interfaces gráficas
+
+pysimplegui
+Tkinte
+PyQt
+PyGTK
+PyGUI
+PySimpleGUI
+
+As GUIs são contruídas a partir de componentes GUI
+Um componente GUI é um objeto
+
+pip install PySimpleGUI
+
+É codado em matriz.
+Cada linha é uma linha da matriz.
+
+Como criar componentes visuais:
+	1. criar uma classe que representa a tela
+	2. definir na classe um atributo __window
+	3. Definir layout com as linhas da tela
+	4. adicionar componentes visuais às linhas da tela
+
+
+ExemploCiew
+__init__()
+O layout daw tela fica em init_component
+opn()
+close()
+show_message(titulo_mensagem)
+
+
+import PySimpleGUI as sg
+
+class ExempoView:
+
+
+
+
+PRESTA A ATENÇÃO:
+
+def __new__(cls):    // é chamado antes do construtor, under the hood
+
+o new é o verdadeiro construtor (é o código que roda para criar o objeto - ou não, podemos evitar uma nova criação)
+
+
+
